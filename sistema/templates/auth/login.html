@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<br>
+
+<div class="container d-flex justify-content-center align-items-start" style="min-height: 90vh; margin-top: -5vh; overflow-x: hidden;">
+    <div class="row w-100 mx-auto">
+        <div class="col-lg-12 col-xl-10 mx-auto">
+            <div class="card shadow-lg border-0" style="border-radius: 15px;">
+                <div class="card-header text-white text-center" style="background-color: #4e54c8; border-radius: 15px 15px 0 0; padding: 2rem;">
+                    <h1 class="h4 mb-0" style="font-size: 2.5rem; font-weight: bold;">{% block title %}Inicio de sesión{% endblock %}</h1>
+                </div>
+                <div class="card-body p-5">
+                    {% if error %}
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        {{ error }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                    {% endif %}
+                    <form action="" method="post">
+                        <div class="form-group mb-4">
+                            <label for="username" class="form-label text-secondary" style="font-weight: bold;">Nombre de usuario</label>
+                            <input type="text" class="form-control form-control-lg" id="username" name="username" placeholder="Ingrese su usuario" required>
+                        </div>
+                        <div class="form-group mb-4 position-relative">
+                            <label for="password" class="form-label text-secondary" style="font-weight: bold;">Contraseña</label>
+                            <div class="input-group">
+                                <input type="password" class="form-control form-control-lg rounded-end-0" id="password" name="password" placeholder="Ingrese su contraseña" required>
+                                <button type="button" class="btn btn-outline-secondary rounded-start-0" id="togglePassword">
+                                    <i class="bi bi-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <button type="submit" class="btn btn-lg w-100 text-white" style="background-color: #4e54c8; font-weight: bold; border-radius: 10px;">Iniciar Sesión</button>
+                        </div>
+                        <div class="text-center">
+                            <a class="btn btn-link text-secondary" href="{{ url_for('auth.recuperar_contrasena')}}">Olvidé mi contraseña</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap Icons for the eye icon -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css" rel="stylesheet">
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const togglePassword = document.querySelector('#togglePassword');
+    const password = document.querySelector('#password');
+
+    togglePassword.addEventListener('click', function () {
+        const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
+        password.setAttribute('type', type);
+        this.innerHTML = type === 'password' ? '<i class="bi bi-eye"></i>' : '<i class="bi bi-eye-slash"></i>';
+    });
+});
+</script>
+{% endblock %}

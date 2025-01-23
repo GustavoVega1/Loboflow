@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Título -->
+    <div class="text-center" style="margin-bottom: 40px;">
+        <h1 class="display-2 mb-3">{% block title %}Generar Reporte de Rendimiento del Modelo{% endblock %}</h1>
+    </div>
+
+    <!-- Formulario -->
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow-sm">
+                <div class="card-body p-5">
+                    <form method="POST">
+                        <!-- Selección del Proyecto -->
+                        <div class="form-group mb-4">
+                            <label for="proyecto" class="form-label">Seleccionar Proyecto</label>
+                            <select class="form-select" id="proyecto" name="proyecto" required onchange="actualizarModelos()">
+                                <option value="" disabled selected>Selecciona un proyecto</option>
+                                {% for proyecto in proyectos %}
+                                <option value="{{ proyecto.idProyecto }}">{{ proyecto.Nombre }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <!-- Selección del Modelo -->
+                        <div class="form-group mb-4">
+                            <label for="modelo" class="form-label">Seleccionar Modelo Generado</label>
+                            <select class="form-select" id="modelo" name="modelo" required>
+                                <option value="" disabled selected>Selecciona un modelo</option>
+                            </select>
+                        </div>
+
+                        <!-- Nombre del Reporte -->
+                        <div class="form-group mb-4">
+                            <label for="nombre" class="form-label">Nombre del Reporte</label>
+                            <input type="text" id="nombre" name="nombre" class="form-control" required>
+                        </div>
+
+                        <!-- Descripción -->
+                        <div class="form-group mb-4">
+                            <label for="descripcion" class="form-label">Descripción</label>
+                            <textarea id="descripcion" name="descripcion" rows="4" class="form-control"></textarea>
+                        </div>
+
+                        <!-- Botones -->
+                        <div class="d-flex justify-content-between">
+                            <a href="{{ url_for('reporte.inicio') }}" class="btn btn-secondary">Cancelar</a>
+                            <button type="submit" class="btn btn-success">Generar Reporte</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block scripts %}
+<script>
+    const modelos = {{ modelos|tojson }};
+    
+    function actualizarModelos() {
+        const proyectoId = document.getElementById('proyecto').value;
+        const modeloSelect = document.getElementById('modelo');
+        modeloSelect.innerHTML = '<option value="" disabled selected>Selecciona un modelo</option>';
+
+        if (modelos[proyectoId]) {
+            modelos[proyectoId].forEach(modelo => {
+                const option = document.createElement('option');
+                option.value = modelo.idModelo;
+                option.textContent = modelo.Nombre;
+                modeloSelect.appendChild(option);
+            });
+        }
+    }
+</script>
+{% endblock %}
+{% endblock %}

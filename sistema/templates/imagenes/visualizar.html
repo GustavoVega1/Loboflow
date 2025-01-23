@@ -1,0 +1,237 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container d-flex flex-column justify-content-center align-items-center min-vh-100">
+    <div class="row w-100 mb-4">
+        <div class="col text-center">
+            <h1 class="mb-0">{% block title %} Proyecto: {{ proyecto.Nombre }} {% endblock title %}</h1>
+            <p>Descripción: {{ proyecto.Descripcion }}</p>
+            <p>Total de imágenes: <strong>{{ total }}</strong></p>  <!-- Conteo de imágenes -->
+        </div>
+    </div>
+
+    <!-- Formulario de opciones -->
+    <form id="opciones-form" method="POST" action="{{ url_for('imagenes.opciones', proyecto_id=proyecto.idProyecto) }}" class="text-center">
+        <div class="d-flex justify-content-center align-items-center mb-3">
+            <!-- Select para la acción -->
+            <select name="accion" class="form-select d-inline-block w-auto" required>
+                <option value="">Selecciona una opción</option>
+                <option value="eliminar">Eliminar seleccionadas</option>
+                <option value="generar_dataset">Generar Dataset</option>
+            </select>
+
+            <!-- Botón aplicar -->
+            <button type="submit" class="btn btn-primary ms-3">Aplicar</button>
+        </div>
+
+        <!-- Input para los nombres de las imágenes seleccionadas -->
+        <input type="hidden" name="imagenes_seleccionadas" id="imagenes_seleccionadas" value="">
+
+        <div class="mt-3 d-flex align-items-center">
+            <input type="checkbox" id="seleccionar-todas-checkbox" class="form-check-input me-2" />
+            <label for="seleccionar-todas-checkbox" class="me-2">Seleccionar todas</label>
+            <span id="contador-seleccionadas" class="d-inline-block">0 seleccionadas</span>
+        </div>
+
+    </form>
+    
+    <div class="row">
+        {% for imagen in imagenes %}
+            <div class="col-lg-2 col-md-3 col-sm-4 mb-3">  
+                <div class="card imagen-card" data-imagen="{{ imagen }}">
+                    <img src="{{ url_for('imagenes.servir_imagenes', filename=proyecto.Nombre + '/' + imagen) }}" class="card-img-top" alt="{{ imagen }}" style="max-height: 200px; object-fit: cover;">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">{{ imagen }}</h5>
+                        <input type="hidden" name="imagen_{{ loop.index }}" value="{{ imagen }}">
+
+                        <!-- Checkbox oculto para selección -->
+                        <input type="checkbox" class="form-check-input select-imagen" data-imagen="{{ imagen }}" style="display:none;">
+                        <!-- Contenedor para la palomita -->
+                        <div class="checkmark-container">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" class="checkmark">
+                                <path d="M21 7L9 17l-5-5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+    {% if not imagenes %}
+        <div class="alert alert-info" role="alert">
+            No hay imágenes disponibles para este proyecto.
+        </div>
+    {% endif %}
+
+    <!-- Modal de advertencia para la selección de imágenes -->
+    <div class="modal fade" id="noImagesSelectedModal" tabindex="-1" aria-labelledby="noImagesSelectedModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-sm">
+            <div class="modal-content" style="border-radius: 15px; background: linear-gradient(135deg, #f8f9fa, #e9ecef);">
+                <div class="modal-header border-0 text-center" style="background: #ffc107; color: white; border-radius: 15px 15px 0 0;">
+                    <h5 class="modal-title w-100" id="noImagesSelectedModalLabel">Advertencia</h5>
+                </div>
+                <div class="modal-body text-center">
+                    <p style="font-size: 1.2rem; color: #6c757d;">No has seleccionado ninguna imagen. Por favor, selecciona al menos una imagen para continuar.</p>
+                    <i class="lni lni-warning text-warning" style="font-size: 3rem;"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de confirmación para la acción -->
+    <div class="modal fade" id="confirmationModal" tabindex="-1" aria-labelledby="confirmationModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-sm">
+            <div class="modal-content" style="border-radius: 15px; background: linear-gradient(135deg, #f8f9fa, #e9ecef);">
+                <div class="modal-header border-0 text-center" style="background: #28a745; color: white; border-radius: 15px 15px 0 0;">
+                    <h5 class="modal-title w-100" id="confirmationModalLabel">Confirmación</h5>
+                </div>
+                <div class="modal-body text-center">
+                    <p style="font-size: 1.2rem; color: #6c757d;">¿Estás seguro de que deseas realizar esta acción? Esta acción no se puede deshacer.</p>
+                    <i class="lni lni-question-circle text-success" style="font-size: 3rem;"></i>
+                </div>
+                <div class="modal-footer justify-content-center">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-danger" id="confirmActionBtn">Confirmar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    let selectedImageNames = new Set();
+
+    // Función para manejar la selección de una imagen individual
+    function toggleImagenSeleccionada(imagenNombre, isChecked) {
+        const selectedImagesInput = document.getElementById('imagenes_seleccionadas');
+        const contadorSeleccionadas = document.getElementById('contador-seleccionadas');
+        
+        if (isChecked) {
+            selectedImageNames.add(imagenNombre);
+        } else {
+            selectedImageNames.delete(imagenNombre);
+        }
+
+        // Actualiza el campo oculto con las imágenes seleccionadas
+        selectedImagesInput.value = Array.from(selectedImageNames).join(',');
+
+        // Actualiza el contador de imágenes seleccionadas
+        contadorSeleccionadas.textContent = `${selectedImageNames.size} seleccionadas`;
+
+        // Resalta las imágenes seleccionadas
+        const card = document.querySelector(`[data-imagen="${imagenNombre}"]`);
+        if (isChecked) {
+            card.classList.add('selected');
+        } else {
+            card.classList.remove('selected');
+        }
+    }
+
+    // Manejo de cambio en el checkbox de la imagen
+    document.querySelectorAll('.card-img-top').forEach(img => {
+        img.addEventListener('click', function() {
+            const imagenNombre = this.alt;
+            const checkbox = this.parentElement.querySelector('.select-imagen');
+            checkbox.checked = !checkbox.checked; // Cambia el estado del checkbox
+
+            toggleImagenSeleccionada(imagenNombre, checkbox.checked);
+        });
+    });
+
+    // Seleccionar/desmarcar todas las imágenes al cambiar el estado del checkbox "Seleccionar todas"
+    document.getElementById('seleccionar-todas-checkbox').addEventListener('change', function() {
+        const allCheckboxes = document.querySelectorAll('.select-imagen');
+        const isChecked = this.checked;
+
+        // Selecciona o deselecciona todas las imágenes
+        allCheckboxes.forEach(checkbox => {
+            checkbox.checked = isChecked;
+            const imagenNombre = checkbox.getAttribute('data-imagen');
+            toggleImagenSeleccionada(imagenNombre, isChecked);
+        });
+    });
+
+    // Validar antes de enviar el formulario
+    document.getElementById('opciones-form').addEventListener('submit', function(e) {
+        const selectedImagesInput = document.getElementById('imagenes_seleccionadas');
+        if (selectedImagesInput.value === "") {
+            // Evitar el envío del formulario
+            e.preventDefault();  
+            // Mostrar el modal de advertencia
+            new bootstrap.Modal(document.getElementById('noImagesSelectedModal')).show();
+        } else {
+            // Mostrar el modal de confirmación
+            e.preventDefault();
+            new bootstrap.Modal(document.getElementById('confirmationModal')).show();
+        }
+    });
+
+    // Confirmar la acción desde el modal
+    document.getElementById('confirmActionBtn').addEventListener('click', function() {
+        document.getElementById('opciones-form').submit(); // Enviar el formulario
+    });
+</script>
+
+<style>
+    .card {
+        position: relative;
+        cursor: pointer;
+    }
+
+    .card-body {
+        position: relative;
+    }
+
+    /* Estilo para resaltar las imágenes seleccionadas */
+    .selected {
+        border: 3px solid #28a745; /* Verde cuando seleccionada */
+        box-shadow: 0 0 10px rgba(0, 123, 255, 0.5);
+    }
+
+    /* Contenedor para la palomita */
+    .checkmark-container {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        display: none;
+    }
+
+    .card.selected .checkmark-container {
+        display: block;
+    }
+
+    .checkmark {
+        width: 40px;
+        height: 40px;
+        stroke: #28a745;
+        stroke-width: 2;
+        fill: none;
+    }
+
+    .d-flex {
+        margin-top: 1.5rem;
+        justify-content: flex-start;
+        align-items: center; /* Alineación vertical centrada */
+        gap: 8px; /* Espacio entre los elementos */
+    }
+
+    #seleccionar-todas-checkbox {
+        margin-right: 10px;
+    }
+
+    #contador-seleccionadas {
+        font-weight: bold;
+    }
+
+    .form-select {
+        margin-right: 10px;
+    }
+
+    .form-check-input {
+        margin-top: 10px;
+    }
+</style>
+{% endblock %}

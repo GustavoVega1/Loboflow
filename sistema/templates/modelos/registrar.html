@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container-fluid p-0 m-0" style="overflow-x: hidden; width: 100%;"> <!-- Removemos márgenes y padding y aseguramos que el ancho es 100% -->
+    <div class="row w-100 justify-content-center">
+        <div class="col-md-12 col-lg-10 col-xl-8"> <!-- Aumentamos el tamaño de la columna -->
+            <div class="bg-light shadow-sm p-5 rounded" style="min-height: 50vh;"> <!-- Aumentamos el padding y la altura mínima -->
+                <div class="text-center mb-4">
+                    <h1 class="h1" style="font-size: 2.5rem;">{% block title %}Registrar modelo{% endblock %}</h1> <!-- Título ajustado -->
+                </div>
+                <form method="POST" enctype="multipart/form-data">
+                    <!-- Nombre del modelo -->
+                    <div class="form-group mb-4">
+                        <label for="nombre" class="h6" style="font-size: 1.2rem;">Nombre del modelo</label> <!-- Fuente del label ajustada -->
+                        <input type="text" class="form-control" id="nombre" name="nombre" required style="font-size: 1.2rem; padding: 0.8rem; line-height: 1.6;">
+                    </div>
+                
+                    <!-- Cargar el archivo -->
+                    <div class="form-group mb-4">
+                        <label for="archivo" class="h6" style="font-size: 1.2rem;">Cargar archivo del modelo</label> <!-- Fuente del label ajustada -->
+                        <input type="file" class="form-control" id="archivo" name="archivo" required accept=".pt" style="font-size: 1.2rem; padding: 0.4rem; line-height: 1.4;">
+                    </div>
+                
+                    <!-- Arquitectura -->
+                    <div class="form-group mb-4">
+                        <label for="arquitectura" class="h6" style="font-size: 1.2rem;">Arquitectura del modelo</label> <!-- Fuente del label ajustada -->
+                        <select class="form-select" aria-label="Selecciona una arquitectura" id="arquitectura" name="arquitectura" required style="font-size: 1.2rem; padding: 0.8rem; line-height: 1.6;">
+                            <option value="" disabled selected>Selecciona una arquitectura</option>
+                            <option value="YOLO">YOLO</option>
+                            <option value="Transformer">Transformer</option>
+                        </select>
+                    </div>
+                
+                    <!-- Descripción del modelo -->
+                    <div class="form-group mb-4">
+                        <label for="descripcion" class="h6" style="font-size: 1.2rem;">Descripción del modelo</label> <!-- Fuente del label ajustada -->
+                        <textarea class="form-control" id="descripcion" name="descripcion" style="font-size: 1.2rem; padding: 0.8rem; line-height: 1.6;" rows="3" ></textarea>
+                    </div>
+                
+                    <!-- Proyecto al que está afiliado -->
+                    <div class="form-group mb-4">
+                        <label for="proyecto_id" class="h6" style="font-size: 1.2rem;">Selecciona un proyecto afiliado</label> <!-- Fuente del label ajustada -->
+                        <select class="form-select" aria-label="Selecciona un proyecto" id="proyecto_id" name="proyecto_id" required style="font-size: 1.2rem; padding: 0.8rem; line-height: 1.6;">
+                            <option value="" disabled selected>Selecciona un proyecto</option>
+                            {% for proyecto in proyectos %}
+                                <option value="{{ proyecto.idProyecto }}">{{ proyecto.Nombre }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                
+                    <!-- Botón para enviar el formulario -->
+                    <div class="d-flex justify-content-between mt-4">
+                        <a href="{{ url_for('modelos.inicio') }}" class="btn btn-danger btn-sm w-48" style="font-size: 1.2rem; padding: 0.8rem;">Cancelar</a> <!-- Botón de cancelar -->
+                        <button type="submit" class="btn btn-success btn-sm w-48" style="font-size: 1.2rem; padding: 0.8rem;">Registrar Modelo</button> <!-- Botón de registrar ajustado -->
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container-fluid p-0 m-0" style="overflow-x: hidden; width: 100%;"> 
+    <div class="row w-100 justify-content-center">
+        <div class="col-md-12 col-lg-10 col-xl-8"> 
+            <div class="bg-light shadow-sm p-5 rounded" style="min-height: 50vh;">
+                <div class="text-center mb-4">
+                    <h1 class="h1" style="font-size: 2.2rem; color: #333;">{% block title %} Visualizar Imágenes {% endblock %}</h1>
+                </div>
+                <form method="GET" action="{{ url_for('imagenes.visualizar') }}">
+                    <div class="form-group mb-5">
+                        <label for="proyecto" class="h6" style="font-size: 1.4rem; color: #555;">Selecciona un proyecto</label>
+                        <select class="form-select" aria-label="Selecciona un proyecto" id="proyecto" name="proyecto_id" required style="font-size: 1.2rem; padding: 1rem; line-height: 1.2;">
+                            <option value="" disabled selected>Selecciona un proyecto</option>
+                            {% for proyecto in proyectos %}
+                                <option value="{{ proyecto.idProyecto }}">{{ proyecto.Nombre }} - {{ proyecto.Descripcion }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-success btn-lg w-100" style="font-size: 1.3rem; padding: 1rem;">Visualizar</button>
+                </form>
+                <br>
+                <div class="d-grid gap-2">
+                    <a href="{{ url_for('imagenes.inicio') }}" class="btn btn-danger btn-lg" style="font-size: 1.3rem; padding: 1rem;">Cancelar</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

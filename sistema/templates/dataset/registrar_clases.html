@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container-fluid p-0 m-0" style="overflow-x: hidden; width: 100%;"> <!-- Removemos márgenes y padding y aseguramos que el ancho es 100% -->
+    <div class="row w-100 justify-content-center">
+        <div class="col-md-12 col-lg-10 col-xl-8"> <!-- Aumentamos el tamaño de la columna -->
+            <div class="bg-light shadow-sm p-5 rounded" style="min-height: 50vh;"> <!-- Aumentamos el padding y la altura mínima -->
+                <div class="text-center mb-4">
+                    <h1 class="h1" style="font-size: 2.5rem;">{% block title %}Registrar Clases{% endblock %}</h1> <!-- Título ajustado -->
+                </div>
+                <form method="POST" action="{{ url_for('dataset.registrar_clases') }}">
+                    <!-- Clases -->
+                    <div class="form-group mb-4">
+                        <label for="clases" class="h6" style="font-size: 1.2rem;">Clases</label> <!-- Fuente del label ajustada -->
+                        <div id="clases-container">
+                            <div class="clase-container">
+                                <div class="input-group mb-2">
+                                    <input type="text" class="form-control form-control-lg" name="clases[]" placeholder="Ingresa una clase" required style="font-size: 1.2rem; padding: 0.8rem; line-height: 1.6;">
+                                    <div class="input-group-append">
+                                        <button type="button" class="btn btn-danger btn-sm remove-clase" style="font-size: 1.2rem; padding: 0.4rem;">
+                                            <i class="lni lni-close"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Botón para agregar otra clase -->
+                        <button type="button" id="agregar-clase" class="btn btn-info btn-lg w-100 mt-2" style="font-size: 1.2rem; padding: 0.8rem;">Agregar otra clase</button>
+                    </div>
+
+                    <!-- Botón para enviar el formulario -->
+                    <div class="d-flex justify-content-between mt-4">
+                        <a href="{{ url_for('modelos.inicio') }}" class="btn btn-danger btn-sm w-48" style="font-size: 1.2rem; padding: 0.8rem;">Cancelar</a>
+                        <button type="submit" class="btn btn-success btn-sm w-48" style="font-size: 1.2rem; padding: 0.8rem;">Registrar Clases</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Agregar clase
+    document.getElementById('agregar-clase').addEventListener('click', function() {
+        const container = document.getElementById('clases-container');
+        const newClaseContainer = document.createElement('div');
+        newClaseContainer.classList.add('clase-container');
+        
+        const inputGroup = document.createElement('div');
+        inputGroup.classList.add('input-group', 'mb-2');
+
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.name = 'clases[]';
+        input.classList.add('form-control', 'form-control-lg');
+        input.placeholder = 'Ingresa una clase';
+        input.style.fontSize = '1.2rem';
+        input.style.padding = '0.8rem';
+        input.style.lineHeight = '1.6';
+        
+        const appendDiv = document.createElement('div');
+        appendDiv.classList.add('input-group-append');
+
+        const removeButton = document.createElement('button');
+        removeButton.type = 'button';
+        removeButton.classList.add('btn', 'btn-danger', 'btn-sm', 'remove-clase');
+        removeButton.style.fontSize = '1.2rem';
+        removeButton.style.padding = '0.4rem';
+        removeButton.innerHTML = '<i class="lni lni-close"></i>';
+
+        // Eliminar clase al hacer clic en el botón
+        removeButton.addEventListener('click', function() {
+            container.removeChild(newClaseContainer);
+        });
+
+        appendDiv.appendChild(removeButton);
+        inputGroup.appendChild(input);
+        inputGroup.appendChild(appendDiv);
+        newClaseContainer.appendChild(inputGroup);
+        container.appendChild(newClaseContainer);
+    });
+
+    // Eliminar clase
+    document.querySelectorAll('.remove-clase').forEach(function(button) {
+        button.addEventListener('click', function() {
+            const container = document.getElementById('clases-container');
+            container.removeChild(button.parentElement.parentElement);
+        });
+    });
+</script>
+{% endblock %}

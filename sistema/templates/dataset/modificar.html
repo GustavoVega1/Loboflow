@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container-fluid p-0 m-0" style="overflow-x: hidden; width: 100%;"> <!-- Removemos márgenes y padding y aseguramos que el ancho es 100% -->
+    <div class="row w-100 justify-content-center">
+        <div class="col-md-12 col-lg-10 col-xl-8"> <!-- Aumentamos el tamaño de la columna -->
+            <div class="bg-light shadow-sm p-5 rounded" style="min-height: 50vh;"> <!-- Aumentamos el padding y la altura mínima -->
+                <div class="text-center mb-4">
+                    <h1 class="h1" style="font-size: 2.5rem;">Modificar Dataset</h1> <!-- Título ajustado -->
+                </div>
+                <form method="POST" action="{{ url_for('dataset.modificar', id=dataset.idDataset) }}">
+                    <!-- Nombre del dataset -->
+                    <div class="form-group mb-3">
+                        <label for="nombre_dataset" class="h6" style="font-size: 1.2rem;">Nombre del Dataset</label> <!-- Fuente del label ajustada -->
+                        <input type="text" name="nombre_dataset" class="form-control form-control-lg" placeholder="Ingresa el nombre del dataset" value="{{ dataset.Nombre }}" required style="font-size: 1.2rem; padding: 0.8rem; line-height: 1.6;">
+                    </div>
+
+                    <!-- Descripción del dataset -->
+                    <div class="form-group mb-3">
+                        <label for="descripcion_dataset" class="h6" style="font-size: 1.2rem;">Descripción</label> <!-- Fuente del label ajustada -->
+                        <textarea name="descripcion_dataset" class="form-control form-control-lg" rows="4" placeholder="Agrega una breve descripción" required style="font-size: 1.2rem; padding: 0.8rem; line-height: 1.6;">{{ dataset.Descripcion }}</textarea>
+                    </div>
+
+                    
+                    <!-- Botones para guardar o cancelar -->
+                    <div class="d-flex justify-content-between mt-4">
+                        <a href="{{ url_for('dataset.inicio') }}" class="btn btn-danger btn-sm w-48" style="font-size: 1.2rem; padding: 0.8rem;">Cancelar</a> <!-- Botón de cancelar -->
+                        <button type="submit" class="btn btn-success btn-lg w-48" style="font-size: 1.2rem; padding: 0.8rem;">Guardar Cambios</button> <!-- Botón para guardar cambios -->
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

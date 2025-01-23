@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container-fluid p-0 m-0" style="overflow-x: hidden; width: 100%;"> 
+    <div class="row w-100 justify-content-center">
+        <div class="col-md-12 col-lg-10 col-xl-8"> 
+            <div class="bg-light shadow-sm p-5 rounded" style="min-height: 50vh;">
+                <div class="text-center mb-4">
+                    <h1 class="h1" style="font-size: 2.2rem; color: #333;">{% block title %} Interacción con el modelo entrenado {% endblock %}</h1>
+                </div>
+                <form method="POST" action="{{ url_for('experimentador.filtrar') }}" enctype="multipart/form-data">
+                    <!-- Seleccionar Proyecto -->
+                    <div class="form-group mb-5">
+                        <label for="proyecto" class="h6" style="font-size: 1.4rem; color: #555;">Selecciona un proyecto</label>
+                        <select class="form-select" aria-label="Selecciona un proyecto" id="proyecto" name="proyecto_id" onchange="actualizarModelos()" style="font-size: 1.2rem; padding: 1rem; line-height: 1.2;">
+                            <option value="" disabled selected>Todos los proyectos</option>
+                            {% for proyecto in proyectos %}
+                                <option value="{{ proyecto.idProyecto }}">{{ proyecto.Nombre }} - {{ proyecto.Descripcion }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <!-- Seleccionar Modelo Entrenado -->
+                    <div class="form-group mb-5">
+                        <label for="modelo" class="h6" style="font-size: 1.4rem; color: #555;">Selecciona un modelo entrenado</label>
+                        <select class="form-select" aria-label="Selecciona un modelo" id="modelo" name="modelo_id" style="font-size: 1.2rem; padding: 1rem; line-height: 1.2;">
+                            <option value="" disabled selected>Todos los modelos entrenados</option>
+                        </select>
+                    </div>
+                    <!-- Subir Imagen -->
+                    <div class="form-group mb-5">
+                        <label for="archivo_zip" class="h6" style="font-size: 1.4rem; color: #555;">Sube un archivo .zip con imágenes</label>
+                        <input type="file" class="form-control" id="archivo_zip" name="archivo_zip" accept=".zip" style="font-size: 1.2rem; padding: 0.4rem;">
+                    </div>                    
+                    <button type="submit" class="btn btn-primary btn-lg w-100" style="font-size: 1.3rem; padding: 1rem;">Evaluar</button>
+                </form>
+                <br>
+                <div class="d-grid gap-2">
+                    <a href="{{ url_for('auth.tester') }}" class="btn btn-danger btn-lg" style="font-size: 1.3rem; padding: 1rem;">Cancelar</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if imagenes_procesadas %}
+    <div class="row mt-4">
+        <h2 class="h4 text-center mb-4">Resultados de la Inferencia</h2>
+        {% for img in imagenes_procesadas %}
+            <div class="col-md-4 mb-3 text-center">
+                <div class="card shadow-sm">
+                    <img src="{{ url_for('experimentador.serve_inferencia', filename=img['imagen']) }}" class="card-img-top" alt="Resultado de Inferencia">
+                    <div class="card-body">
+                        <p class="card-text">Precisión: {{ img['precisión'] }}</p>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}
+
+
+<script>
+    const modelos = {{ modelos_por_proyecto|tojson }};
+
+    function actualizarModelos() {
+        var proyectoId = document.getElementById('proyecto').value;
+        var modeloSelect = document.getElementById('modelo');
+        modeloSelect.innerHTML = '<option value="" disabled selected>Todos los modelos entrenados</option>';
+
+        if (modelos[proyectoId]) {
+            modelos[proyectoId].forEach(function(modelo) {
+                var option = document.createElement("option");
+                option.value = modelo.idModelo_generados;
+                option.textContent = modelo.Nombre;
+                modeloSelect.appendChild(option);
+            });
+        }
+    }
+</script>
+
+{% endblock %}

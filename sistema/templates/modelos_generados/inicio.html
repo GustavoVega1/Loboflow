@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Contenedor para el título -->
+    <div class="text-center" style="margin-bottom: 40px;">
+        <h1 class="display-2 mb-3" style="margin: 0;">{% block title %}Modelos Generados{% endblock %}</h1>
+    </div>
+    
+    <!-- Contenedor para la tabla de modelos generados -->
+    <div class="table-responsive">
+        <table class="table table-hover table-bordered table-striped">
+            <thead class="table-dark" style="text-align: center;">
+                <tr>
+                    <th class="col" style="width: 30%;">Nombre del Modelo</th>
+                    <th class="col" style="width: 30%;">Descripción</th>
+                    <th class="col" style="width: 30%;">Fecha de Entrenamiento</th>
+                    <th class="col" style="width: 10%;">Acción</th> <!-- Nueva columna de acción -->
+                </tr>
+            </thead>
+            <tbody>
+                {% for modelo in modelos %}
+                <tr class="text-center" style="font-size: 1.2rem; height: 45px;">
+                    <td>{{ modelo.Nombre }}</td>
+                    <td>{{ modelo.Descripcion }}</td>
+                    <td>{{ modelo.Fecha_creacion.strftime('%Y-%m-%d') }}</td>
+                    <td>
+                        <!-- Botón de descarga -->
+                        <a href="{{ url_for('experimentador.download_model', modelo_id=modelo.idModelo_generados) }}" class="btn btn-primary">
+                            <box-icon name='download' type='solid' ></box-icon>
+                        </a>                        
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

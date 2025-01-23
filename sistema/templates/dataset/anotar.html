@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container d-flex justify-content-center align-items-center min-vh-100">
+    <div class="row w-100">
+        <div class="col-lg-8 col-xl-6 mx-auto">
+            <div class="card shadow-lg border-light">
+                <div class="card-header" style="background-color: #000000; color: #ffffff; text-align: center; padding: 1rem;">
+                    <h1 class="h4 mb-0" style="font-size: 2.2rem;">Seleccionar Clase y Anotar</h1>
+                </div>
+                <div class="card-body p-4">
+                    <form method="POST" action="{{ url_for('dataset.guardar_anotacion') }}">
+                        <div class="form-group mb-3">
+                            <label for="clase">Selecciona una Clase</label>
+                            <select name="clase" class="form-control form-control-lg mb-3" required>
+                                {% for clase in clases %}
+                                    <option value="{{ clase }}">{{ clase }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <button type="button" class="btn btn-info btn-lg w-100" data-toggle="modal" data-target="#instruccionesModal">Instrucciones para Anotación</button>
+
+                        <div class="modal fade" id="instruccionesModal" tabindex="-1" role="dialog" aria-labelledby="instruccionesModalLabel" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="instruccionesModalLabel">Instrucciones</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p>Para anotar un objeto en la imagen, dibuja un rectángulo alrededor del objeto y selecciona la clase correspondiente. Usa el botón izquierdo del mouse para definir los vértices.</p>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-success btn-lg">Guardar Anotación</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

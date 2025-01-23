@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container-fluid p-0 m-0" style="overflow-x: hidden; width: 100%;"> <!-- Removemos márgenes y padding y aseguramos que el ancho es 100% -->
+    <div class="row w-100 justify-content-center">
+        <div class="col-md-12 col-lg-10 col-xl-8"> <!-- Aumentamos el tamaño de la columna -->
+            <div class="bg-light shadow-sm p-5 rounded" style="min-height: 80vh;"> <!-- Aumentamos el padding y la altura mínima -->
+                <div class="text-center mb-4">
+                    <h1 class="h1">{% block title %}Registrar usuario{% endblock %}</h1> <!-- Título ajustado -->
+                </div>
+                <form method="post">
+                    <div class="form-group mb-5">
+                        <label for="username" class="h6" style="font-size: 1.3rem;">Nombre de Usuario</label> <!-- Fuente del label ajustada -->
+                        <input type="text" class="form-control" id="username" name="username" required style="font-size: 1.3rem; padding: 1rem; line-height: 2;">
+                    </div>
+                    <div class="form-group mb-5">
+                        <label for="email" class="h6" style="font-size: 1.3rem;">Correo Electrónico</label> <!-- Fuente del label ajustada -->
+                        <input type="email" class="form-control" id="email" name="email" required style="font-size: 1.3rem; padding: 1rem; line-height: 2;">
+                    </div>
+                    <div class="form-group mb-5">
+                        <label for="role" class="h6" style="font-size: 1.3rem;">Rol</label>
+                        <select class="form-select" aria-label="Default select example" id="role" name="role" required style="font-size: 1.2rem; padding: 1rem; line-height: 0.8;">
+                            <option value="" disabled selected>Selecciona un rol</option>
+                            <option value="Administrador">Administrador</option>
+                            <option value="Experto">Experto</option>
+                            <option value="Tester">Tester</option>
+                        </select>                        
+                    </div>
+                    <div class="form-group mb-5">
+                        <label for="ocupacion" class="h6" style="font-size: 1.3rem;">Ocupación</label>
+                        <input type="text" class="form-control" id="ocupacion" name="ocupacion" style="font-size: 1.3rem; padding: 1rem; line-height: 2;">
+                    </div>
+                    <div class="form-group mb-5">
+                        <label for="intereses" class="h6" style="font-size: 1.3rem;">Intereses</label>
+                        <input type="text" class="form-control" id="intereses" name="intereses" style="font-size: 1.3rem; padding: 1rem; line-height: 2;">
+                    </div>
+                    <div class="d-flex justify-content-between mt-5">
+                        <a href="{{ url_for('auth.inicio') }}" class="btn btn-danger btn-sm w-48" style="font-size: 1.3rem; padding: 1rem;">Cancelar</a> <!-- Botón de cancelar -->
+                        <button type="submit" class="btn btn-success btn-sm w-48" style="font-size: 1.3rem; padding: 1rem;">Registrar</button> <!-- Botón de registrar ajustado -->
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

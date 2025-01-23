@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %} {% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/styles.css') }}" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link href="https://cdn.lineicons.com/4.0/lineicons.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" />
+</head>
+
+<body>
+    <div class="wrapper">
+        <!-- Sidebar -->
+        <aside id="sidebar">
+            <div class="d-flex">
+                <button class="toggle-btn" type="button">
+                    <i class="lni lni-grid-alt"></i>
+                </button>
+                <div class="sidebar-logo">
+                    <a href="{{ url_for('index') }}">LOBOFLOW</a>
+                </div>
+            </div>
+            <ul class="sidebar-nav">
+                {% if g.user %}
+                    <li class="sidebar-item">
+                        <a href="#" class="sidebar-link collapsed has-dropdown " data-bs-toggle="collapse"
+                            data-bs-target="#auth" aria-expanded="false" aria-controls="auth">
+                            <i class="lni lni-user"></i>
+                            <span>{{ g.user.nombre }}</span>
+                        </a>
+                        <ul id="auth" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
+                            <li class="sidebar-item">
+                                <a href="{{ url_for('auth.cambiar_contrasena', correo = g.user.Correo)}}" class="sidebar-link">Modificar Contraseña</a>
+                            </li>
+                        </ul>
+                    </li>
+                    {% if g.user.Rol == "Administrador" %}
+                        <li class="sidebar-item">
+                            <a class="sidebar-link" href="{{ url_for('auth.admin')}}">
+                                <i class="lni lni-home"></i>
+                                <span>Inicio</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-item">
+                            <a class="sidebar-link" href="{{ url_for('proyecto.inicio')}}">
+                                <i class="lni lni-bulb"></i>
+                                <span>Proyectos</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-item">
+                            <a class="sidebar-link" href="{{ url_for('imagenes.inicio')}}">
+                                <i class="lni lni-image"></i>
+                                <span>Imágenes</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-item">
+                            <a class="sidebar-link" href="{{ url_for('modelos.inicio')}}">
+                                <i class="lni lni-files"></i>
+                                <span>Modelos</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-item">
+                            <a class="sidebar-link" href="{{ url_for('auth.inicio')}}">
+                                <i class="lni lni-users"></i>
+                                <span>Usuarios</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-item">
+                            <a class="sidebar-link" href="{{ url_for('dataset.inicio')}}">
+                                <i class="lni lni-package"></i>
+                                <span>DataSets</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-item">
+                            <a class="sidebar-link" href="{{ url_for('experimentador.inicio')}}">
+                                <i class="lni lni-cogs"></i>
+                                <span>Entrenamiento</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-item">
+                            <a class="sidebar-link" href="{{ url_for('experimentador.modelos_generados')}}">
+                                <i class="lni lni-write"></i>
+                                <span>Modelos entrenados</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-item">
+                            <a class="sidebar-link" href="{{ url_for('reporte.inicio')}}">
+                                <i class="lni lni-printer"></i>
+                                <span>Reportes</span>
+                            </a>
+                        </li>
+                    {% elif g.user.Rol == "Tester" %}
+                        <li class="sidebar-item">
+                            <a class="sidebar-link" href="{{ url_for('auth.tester')}}">
+                                <i class="lni lni-home"></i>
+                                <span>Inicio</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-item">
+                            <a class="sidebar-link" href="{{ url_for('experimentador.filtrar')}}">
+                                <box-icon name='intersect' color='#ffffff' ></box-icon>
+                                <span>Interacción con el modelo</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-item">
+                            <a class="sidebar-link" href="{{ url_for('reporte.inicio')}}">
+                                <i class="lni lni-printer"></i>
+                                <span>Reportes</span>
+                            </a>
+                        </li>
+                    {% elif g.user.Rol == "Experto" %}
+                        <li class="sidebar-item">
+                            <a class="sidebar-link" href="{{ url_for('auth.experto')}}">
+                                <i class="lni lni-home"></i>
+                                <span>Inicio</span>
+                            </a>
+                        </li>
+
+                        <li class="sidebar-item">
+                            <a class="sidebar-link" href="{{ url_for('proyecto.inicio')}}">
+                                <i class="lni lni-bulb"></i>
+                                <span>Proyectos</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-item">
+                            <a class="sidebar-link" href="{{ url_for('imagenes.inicio')}}">
+                                <i class="lni lni-image"></i>
+                                <span>Imágenes</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-item">
+                            <a class="sidebar-link" href="{{ url_for('dataset.inicio')}}">
+                                <i class="lni lni-package"></i>
+                                <span>DataSets</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-item">
+                            <a class="sidebar-link" href="{{ url_for('modelos.inicio')}}">
+                                <i class="lni lni-files"></i>
+                                <span>Modelos</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-item">
+                            <a class="sidebar-link" href="{{ url_for('experimentador.inicio')}}">
+                                <i class="lni lni-cogs"></i>
+                                <span>Entrenamiento</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-item">
+                            <a class="sidebar-link" href="{{ url_for('experimentador.modelos_generados')}}">
+                                <i class="lni lni-write"></i>
+                                <span>Modelos entrenados</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-item">
+                            <a class="sidebar-link" href="{{ url_for('reporte.inicio')}}">
+                                <i class="lni lni-printer"></i>
+                                <span>Reportes</span>
+                            </a>
+                        </li>
+                    {% endif %}
+                    <li class="sidebar-item">
+                        <span class="sidebar-link active"></span>
+                    </li>
+                    <li class="sidebar-item">
+                        <a class="sidebar-link" href="{{ url_for('auth.logout') }}">
+                            <i class="lni lni-exit"></i>
+                            <span>Cerrar Sesión</span>
+                        </a>
+                    </li>
+                {% else %}
+                    <li class="sidebar-item">
+                        <a class="sidebar-link" href="{{ url_for('auth.login') }}">
+                            <i class="lni lni-enter"></i>
+                            <span>Iniciar Sesión</span>
+                        </a>
+                    </li>
+                {% endif %}
+            </ul>
+        </aside>
+        
+        <!-- Main Content -->
+            <div class="main">
+                <div class="main-content">
+                    {% block content %}
+                    {% endblock %}
+
+                    {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                    <!-- Modal de Notificación Mejorado -->
+                    <div class="modal fade" id="alertModal" tabindex="-1" aria-labelledby="alertModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered modal-lg">
+                            <div class="modal-content" style="border-radius: 15px; background: linear-gradient(135deg, #f8f9fa, #e9ecef);">
+                                <div class="modal-header border-0 text-center" style="background: #dc3545; color: white; border-radius: 15px 15px 0 0;">
+                                    <h5 class="modal-title w-100" id="alertModalLabel">¡ATENCIÓN!</h5>
+                                </div>
+                                <div class="modal-body text-center">
+                                    {% for category, message in messages %}
+                                    <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                                         {{ message }}
+                                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Estilo CSS adicional para el modal -->
+                    <style>
+                        a .sidebar-link{
+                            text-decoration: none; !important
+                        }
+                        #alertModal .modal-content {
+                            animation: fadeIn 0.5s ease-out;
+                            box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.15);
+                        }
+
+                        @keyframes fadeIn {
+                            from {
+                                opacity: 0;
+                                transform: translateY(-20px);
+                            }
+                            to {
+                                opacity: 1;
+                                transform: translateY(0);
+                            }
+                        }
+
+                        #alertModal .btn-outline-secondary:hover {
+                            background-color: #e2e6ea;
+                            transform: scale(1.05);
+                            transition: transform 0.2s ease-in-out, background-color 0.2s ease-in-out;
+                        }
+
+                        #alertModal .alert .btn-close {
+                            background-color: transparent;
+                            border: none;
+                            font-size: 1.2rem;
+                        }
+
+                        #alertModal .modal-header {
+                            background: #dc3545;
+                            color: white;
+                        }
+
+                        #alertModal .modal-body {
+                            font-size: 1.1rem;
+                            color: #6c757d;
+                        }
+                    </style>
+
+                    <script>
+                        document.addEventListener('DOMContentLoaded', function () {
+                            var alertModal = new bootstrap.Modal(document.getElementById('alertModal'));
+                            alertModal.show();
+                        });
+                    </script>
+                    {% endif %}
+                    {% endwith %}
+                    
+                </div>
+            </div>
+        </div>                          
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+        crossorigin="anonymous"></script>
+            <!-- Bootstrap CSS -->
+    
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+
+    <!-- Bootstrap JS -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+
+    <script src="https://unpkg.com/boxicons@2.1.4/dist/boxicons.js"></script>
+    <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

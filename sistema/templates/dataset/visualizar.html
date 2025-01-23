@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container d-flex flex-column justify-content-center align-items-center min-vh-100">
+    <div class="row w-100 mb-4">
+        <div class="col text-center">
+            <h1 class="mb-0">{% block title %} Dataset: {{ dataset.Nombre }} {% endblock title %}</h1>
+            <p>Descripción: {{ dataset.Descripcion }}</p>
+        </div>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col text-center">
+            <a href="{{ url_for('dataset.inicio') }}" class="btn btn-secondary">Regresar</a>
+        </div>
+    </div>
+
+    <!-- Resumen del Dataset -->
+    <div class="row mb-4">
+        <div class="col text-center">
+            <h3>Resumen del Dataset</h3>
+            <p>
+                Total: <strong>{{ conteos.total }}</strong>, 
+                Train: <strong>{{ conteos.train }}</strong>, 
+                Valid: <strong>{{ conteos.valid }}</strong>, 
+                Test: <strong>{{ conteos.test }}</strong>
+            </p>
+        </div>
+    </div>
+
+    <!-- Mostrar imágenes -->
+    <div class="row">
+        {% for imagen, categoria in imagenes %}
+            <div class="col-lg-2 col-md-3 col-sm-4 mb-3">
+                <div class="card imagen-card" data-imagen="{{ imagen }}" 
+                     {% if categoria == 'train' %} style="background-color: #28a745;" {% elif categoria == 'valid' %} style="background-color: #007bff;" {% elif categoria == 'test' %} style="background-color: #ffc107;" {% endif %}>
+                    {% if dataset.Tipo == 'YOLO' %}
+                        <!-- URL de imagen para YOLO -->
+                        <img src="{{ url_for('dataset.servir_imagenes_yolo', dataset_id=dataset.idDataset, filename=dataset.Nombre + '/' + categoria + '/' + imagen) }}" class="card-img-top" alt="{{ imagen }}" style="max-height: 200px; object-fit: cover;">
+                    {% else %}
+                        <!-- URL de imagen para COCO -->
+                        <img src="{{ url_for('dataset.servir_imagenes_coco', filename='DATASET/' + dataset.Nombre + '/' + categoria + '/' + imagen) }}" class="card-img-top" alt="{{ imagen }}" style="max-height: 200px; object-fit: cover;">
+                    {% endif %}
+                    <div class="card-body">
+                        <p class="card-text text-center text-white">{{ categoria|capitalize }}</p>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+    {% if not imagenes %}
+        <div class="alert alert-info" role="alert">
+            No hay imágenes disponibles para este dataset.
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

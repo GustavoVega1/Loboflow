@@ -1,0 +1,125 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container-fluid text-center mt-4">
+    <div class="card-header mb-5">
+        <h1 class="display-4 font-weight-bold text-primary">{% block title %}EXPERIMENTADOR{% endblock %}</h1>
+    </div>
+    <div class="row g-4">
+        <div class="col-md-6 mb-4">
+            <div class="card border-purple shadow-lg h-100" style="border-color: #800080; border-radius: 15px;">
+                <div class="card-body text-center">
+                    <i class="fas fa-calendar-check fa-3x mb-3" style="color: #800080;"></i>
+                    <h2 class="card-title" style="color: #800080;">Entrenamiento YOLOv8</h2>
+                    <p class="card-text">Configura tu entrenamiento con opciones avanzadas.</p>
+                    <button type="button" class="btn btn-lg" style="background-color: #800080; color: white; border-radius: 30px; transition: background-color 0.3s ease;" data-bs-toggle="modal" data-bs-target="#yoloTrainingModal">
+                        Entrenar
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 mb-4">
+            <div class="card border-pink shadow-lg h-100" style="border-color: #ff69b4; border-radius: 15px;">
+                <div class="card-body text-center">
+                    <i class="fas fa-chalkboard-teacher fa-3x mb-3" style="color: #ff69b4;"></i>
+                    <h2 class="card-title" style="color: #ff69b4;">Entrenamiento RTDeTR</h2>
+                    <p class="card-text">Configura tu entrenamiento con opciones avanzadas.</p>
+                    <button type="button" class="btn btn-lg" style="background-color: #ff69b4; color: white; border-radius: 30px; transition: background-color 0.3s ease;" data-bs-toggle="modal" data-bs-target="#trainingModal">
+                        Entrenar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal para seleccionar el tipo de entrenamiento YOLO -->
+<div class="modal fade" id="yoloTrainingModal" tabindex="-1" aria-labelledby="yoloTrainingModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" style="border-radius: 20px;">
+            <div class="modal-header" style="border-bottom: 2px solid #800080;">
+                <h5 class="modal-title" id="yoloTrainingModalLabel">Selecciona el Tipo de Entrenamiento</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+                <form id="yoloTrainingForm">
+                    <div class="form-check">
+                        <input type="radio" name="tipo_entrenamiento_yolo" value="desde_cero" class="form-check-input" id="yolo_desde_cero">
+                        <label class="form-check-label" for="yolo_desde_cero">Entrenamiento desde 0</label>
+                    </div>
+                    <div class="form-check mt-3">
+                        <input type="radio" name="tipo_entrenamiento_yolo" value="transferencia" class="form-check-input" id="yolo_transferencia">
+                        <label class="form-check-label" for="yolo_transferencia">Transferencia de Aprendizaje</label>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" onclick="redirectToYoloForm()" style="border-radius: 20px; transition: background-color 0.3s ease;">Continuar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal para seleccionar el tipo de entrenamiento RTDeTR -->
+<div class="modal fade" id="trainingModal" tabindex="-1" aria-labelledby="trainingModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" style="border-radius: 20px;">
+            <div class="modal-header" style="border-bottom: 2px solid #ff69b4;">
+                <h5 class="modal-title" id="trainingModalLabel">Selecciona el Tipo de Entrenamiento</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+                <form id="trainingForm">
+                    <div class="form-check">
+                        <input type="radio" name="tipo_entrenamiento" value="desde_cero" class="form-check-input" id="desde_cero">
+                        <label class="form-check-label" for="desde_cero">Entrenamiento desde 0</label>
+                    </div>
+                    <div class="form-check mt-3">
+                        <input type="radio" name="tipo_entrenamiento" value="transferencia" class="form-check-input" id="transferencia">
+                        <label class="form-check-label" for="transferencia">Transferencia de Aprendizaje</label>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" onclick="redirectToForm()" style="border-radius: 20px; transition: background-color 0.3s ease;">Continuar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Función para redirigir según el tipo de entrenamiento de YOLO
+    function redirectToYoloForm() {
+        const tipoEntrenamientoYolo = document.querySelector('input[name="tipo_entrenamiento_yolo"]:checked');
+        
+        if (tipoEntrenamientoYolo) {
+            const selectedValue = tipoEntrenamientoYolo.value;
+            if (selectedValue === 'desde_cero') {
+                window.location.href = "{{ url_for('experimentador.yolo_cero') }}";
+            } else if (selectedValue === 'transferencia') {
+                window.location.href = "{{ url_for('experimentador.yolo_transferencia') }}";
+            }
+        } else {
+            alert("Por favor, selecciona una opción de entrenamiento.");
+        }
+    }
+
+    // Función para redirigir según el tipo de entrenamiento RTDeTR
+    function redirectToForm() {
+        const tipoEntrenamiento = document.querySelector('input[name="tipo_entrenamiento"]:checked');
+        
+        if (tipoEntrenamiento) {
+            const selectedValue = tipoEntrenamiento.value;
+            if (selectedValue === 'desde_cero') {
+                window.location.href = "{{ url_for('experimentador.rtdetr_cero') }}";
+            } else if (selectedValue === 'transferencia') {
+                window.location.href = "{{ url_for('experimentador.rtdetr_transferencia') }}";
+            }
+        } else {
+            alert("Por favor, selecciona una opción de entrenamiento.");
+        }
+    }
+</script>
+
+{% endblock %}

@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container-fluid p-0 m-0" style="overflow-x: hidden; width: 100%;"> 
+    <div class="row w-100 justify-content-center">
+        <div class="col-md-12 col-lg-10 col-xl-8"> 
+            <div class="bg-light shadow-sm p-5 rounded" style="min-height: 50vh;"> 
+                <div class="text-center mb-4">
+                    <h1 class="h1" style="font-size: 2.5rem;">{% block title %}Registrar Reporte{% endblock %}</h1>
+                </div>
+                <form method="POST">
+                    <!-- Proyecto -->
+                    <div class="form-group mb-5">
+                        <label for="proyecto" class="h6" style="font-size: 1.3rem;">Seleccionar proyecto</label>
+                        <div class="input-group">
+                            <select class="form-select" aria-label="Default select example" id="proyecto" name="proyecto" required style="font-size: 1.3rem; padding: 1rem; line-height: 1.1;">
+                                <option value="" disabled selected>Selecciona un proyecto</option>
+                                {% for proyecto in proyectos %}
+                                    <option value="{{ proyecto.idProyecto }}">{{ proyecto.Nombre }}</option>
+                                {% endfor %}
+                            </select>
+                            <button type="button" class="btn btn-primary btn-lg" onclick="actualizarModelos()"><i class="lni lni-search-alt"></i></button>
+                        </div>
+                    </div>
+
+                    <!-- Modelo entrenado -->
+                    <div class="form-group mb-5">
+                        <label for="modelo" class="h6" style="font-size: 1.3rem;">Seleccionar modelo entrenado</label>
+                        <select class="form-select" aria-label="Default select example" id="modelo" name="modelo" required style="font-size: 1.3rem; padding: 1rem; line-height: 2;">
+                            <option value="">Selecciona un modelo primero</option>
+                        </select>
+                    </div>
+
+                    <!-- Nombre del Reporte -->
+                    <div class="form-group mb-5">
+                        <label for="nombre" class="h6" style="font-size: 1.3rem;">Nombre del reporte</label>
+                        <input type="text" class="form-control" id="nombre" name="nombre" required style="font-size: 1.3rem; padding: 1rem; line-height: 2;">
+                    </div>
+
+                    <!-- Descripción -->
+                    <div class="form-group mb-5">
+                        <label for="descripcion" class="h6" style="font-size: 1.3rem;">Descripción del reporte</label>
+                        <textarea class="form-control" id="descripcion" name="descripcion" style="font-size: 1.3rem; padding: 1rem; line-height: 2;" rows="4"></textarea>
+                    </div>
+
+                    <div class="d-flex justify-content-between mt-5">
+                        <a href="{{ url_for('reporte.inicio') }}" class="btn btn-danger btn-sm w-48" style="font-size: 1.3rem; padding: 1rem;">Cancelar</a>
+                        <button type="submit" class="btn btn-success btn-sm w-48" style="font-size: 1.3rem; padding: 1rem;">Registrar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block scripts %}
+<script>
+    const modelos = {{ modelos|tojson }};
+    
+    function actualizarModelos() {
+        var proyectoId = document.getElementById('proyecto').value;  // Obtener el ID del proyecto seleccionado
+        var modeloSelect = document.getElementById('modelo');
+        modeloSelect.innerHTML = '<option value="">Selecciona un modelo</option>';  // Limpiar opciones anteriores
+
+        // Filtrar los modelos según el proyecto seleccionado
+        if (modelos[proyectoId]) {
+            modelos[proyectoId].forEach(function(modelo) {
+                var option = document.createElement("option");
+                option.value = modelo.idModelo;
+                option.textContent = modelo.Nombre;
+                modeloSelect.appendChild(option);
+            });
+        }
+    }
+</script>
+{% endblock %}
+
+{% endblock %}

@@ -1,0 +1,119 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container-fluid p-0 m-0" style="overflow-x: hidden; width: 100%;"> <!-- Removemos márgenes y padding y aseguramos que el ancho es 100% -->
+    <div class="row w-100 justify-content-center">
+        <div class="col-md-12 col-lg-10 col-xl-8"> <!-- Aumentamos el tamaño de la columna -->
+            <div class="bg-light shadow-sm p-5 rounded" style="min-height: 50vh;"> <!-- Aumentamos el padding y la altura mínima -->
+                <div class="text-center mb-4">
+                    <h1 class="h1" style="font-size: 2.5rem;">{% block title %}Entrenamiento de RTDeTR desde 0{% endblock %}</h1> <!-- Título ajustado -->
+                    <p class="lead mt-2" style="font-size: 1.2rem;">Selecciona el proyecto y dataset para empezar el entrenamiento</p>
+                </div>
+                <form method="POST" action="{{ url_for('experimentador.rtdetr_cero') }}">
+                    <!-- Selección de Proyecto con botón de Buscar -->
+                    <div class="form-group mb-4">
+                        <label for="proyecto" class="h6" style="font-size: 1.2rem;">Selecciona un Proyecto</label>
+                        <div class="input-group">
+                            <select class="form-select" id="proyecto" name="proyecto_id" required style="font-size: 1.2rem; padding: 1rem; line-height: 1.1;">
+                                <option value="" disabled selected>Selecciona un proyecto</option>
+                                {% for proyecto in proyectos %}
+                                    <option value="{{ proyecto.idProyecto }}" data-datasets="{{ proyecto.idProyecto }}">
+                                        {{ proyecto.Nombre }} - {{ proyecto.Descripcion }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                            <button type="button" class="btn btn-primary btn-lg" onclick="actualizarDatasets()" style="font-size: 1.2rem; padding: 1rem;"><i class="lni lni-search-alt"></i></button>
+                        </div>
+                    </div>
+
+                    <!-- Selección de Dataset -->
+                    <div class="form-group mb-4">
+                        <label for="dataset" class="h6" style="font-size: 1.2rem;">Selecciona el Dataset</label>
+                        <select id="dataset" name="dataset_id" class="form-select" required style="font-size: 1.2rem; padding: 1rem; line-height: 0.8;">
+                            <option value="" disabled selected>Elige un dataset</option>
+                        </select>
+                    </div>
+
+                    <!-- Nombre del Modelo -->
+                    <div class="form-group mb-4">
+                        <label for="model_name" class="h6" style="font-size: 1.2rem;">Nombre del Modelo</label>
+                        <input type="text" class="form-control form-control-lg" id="model_name" name="model_name" required placeholder="Ingresa el nombre del modelo" style="font-size: 1.2rem; padding: 0.8rem; line-height: 1.6;">
+                    </div>
+
+                    <!-- Parámetro de Epochs -->
+                    <div class="form-group mb-4">
+                        <label for="epochs" class="h6" style="font-size: 1.2rem;">Número de Epochs</label>
+                        <input type="number" class="form-control form-control-lg" id="epochs" name="epochs" required min="1" style="font-size: 1.2rem; padding: 0.8rem; line-height: 1.6;">
+                    </div>
+
+                    <!-- Parámetro de Batch Size -->
+                    <div class="form-group mb-4">
+                        <label for="batch_size" class="h6" style="font-size: 1.2rem;">Tamaño de Batch</label>
+                        <select id="batch_size" name="batch_size" class="form-select" required style="font-size: 1.2rem; padding: 1rem; line-height: 0.8;">
+                            <option value="" disabled selected>Selecciona un tamaño de batch</option>
+                            <option value="2">2</option>
+                            <option value="4">4</option>
+                            <option value="8">8</option>
+                            <option value="8">16</option>
+                            <option value="32">32</option>
+                        </select>
+                    </div>
+
+                    <!-- Optimizer -->
+                    <div class="form-group mb-4">
+                        <label for="optimizer" class="h6" style="font-size: 1.2rem;">Selecciona un Optimizador</label>
+                        <select id="optimizer" name="optimizer" class="form-select" required style="font-size: 1.2rem; padding: 1rem; line-height: 0.8;">
+                            <option value="" disabled selected>Selecciona un optimizador</option>
+                            <option value="AdamW">AdamW</option>
+                            <option value="SGD">SGD</option>
+                        </select>
+                    </div>
+
+                    <!-- Botón para enviar el formulario -->
+                    <div class="d-flex justify-content-between mt-4">
+                        <a href="{{ url_for('experimentador.inicio') }}" class="btn btn-danger btn-sm w-48" style="font-size: 1.2rem; padding: 0.8rem;">Cancelar</a> <!-- Botón de cancelar -->
+                        <button type="submit" class="btn btn-success btn-lg w-48" style="font-size: 1.2rem; padding: 0.8rem;">Iniciar Entrenamiento</button> <!-- Botón de registrar ajustado -->
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Función para actualizar la lista de datasets
+    function actualizarDatasets() {
+        const proyectoSelect = document.getElementById("proyecto");
+        const datasetSelect = document.getElementById("dataset");
+
+        // Limpiar las opciones actuales del select de datasets
+        datasetSelect.innerHTML = '<option value="" disabled selected>Selecciona un dataset</option>';
+
+        // Obtener el proyecto seleccionado
+        const proyectoSeleccionado = proyectoSelect.options[proyectoSelect.selectedIndex];
+        
+        // Obtener el id del proyecto seleccionado
+        const proyectoId = proyectoSeleccionado.value;
+
+        // Obtener los datasets correspondientes a este proyecto desde el backend (datasets_dict)
+        const datasets = {{ datasets|tojson }}; // Pasamos el datasets_dict desde el backend al frontend
+
+        // Filtrar los datasets para el proyecto seleccionado
+        const datasetsFiltrados = datasets[proyectoId] || [];
+
+        // Verificar si hay datasets disponibles
+        if (datasetsFiltrados.length === 0) {
+            alert("No hay datasets disponibles para este proyecto.");
+            return;
+        }
+
+        // Llenar el select de datasets con las opciones correspondientes
+        datasetsFiltrados.forEach(dataset => {
+            const option = document.createElement("option");
+            option.value = dataset;
+            option.textContent = dataset;
+            datasetSelect.appendChild(option);
+        });
+    }
+</script>
+{% endblock %}

@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Contenedor para el título -->
+    <div class="text-center" style="margin-bottom: 40px;">
+        <h1 class="display-2 mb-3" style="margin: 0;">{% block title %}Gestión de Reportes{% endblock %}</h1>
+    </div>
+
+    <div class="d-flex justify-content-end mb-3 gap-2">
+        <!-- Botones para registrar reportes -->
+        {% if g.user %}
+        <a href="{{ url_for('reporte.registrar_reporte_progreso') }}" class="btn btn-primary btn-lg d-flex align-items-center">
+            <i class="lni lni-folder me-2"></i>
+            <span style="font-size: 1.2rem;">Reporte de Progreso</span>
+        </a>
+        {% if g.user.Rol == 'Tester' %}
+        <a href="{{ url_for('reporte.registrar_reporte_metricas') }}" class="btn btn-info btn-lg d-flex align-items-center">
+            <i class="lni lni-chart-bars me-2"></i>
+            <span style="font-size: 1.2rem;">Métricas de Evaluación</span>
+        </a>
+        <a href="{{ url_for('reporte.registrar_reporte_comparativo') }}" class="btn btn-success btn-lg d-flex align-items-center">
+            <i class="lni lni-stats-up me-2"></i>
+            <span style="font-size: 1.2rem;">Reporte Comparativo</span>
+        </a>
+        {% endif %}
+        {% endif %}
+    </div>
+
+    <!-- Contenedor para la tabla de reportes -->
+    <div class="table-responsive">
+        <table class="table table-hover table-bordered table-striped">
+            <thead class="table-dark text-center">
+                <tr>
+                    <th>Nombre del Reporte</th>
+                    <th>Descripción</th>
+                    <th>Fecha de Creación</th>
+                    <th>Opciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for reporte in reportes %}
+                <tr class="text-center">
+                    <td>{{ reporte.Nombre }}</td>
+                    <td>{{ reporte.Descripcion }}</td>
+                    <td>{{ reporte.Fecha}}</td>
+                    <td>
+                        {% if reporte.ruta %}
+                        <a href="{{ url_for('reporte.ver_reporte', filename=reporte.ruta.split('\\')[-1]) }}" class="btn btn-info btn-sm" target="_blank">
+                            <i class="lni lni-eye"></i> Visualizar
+                        </a>
+                        {% endif %}
+                        <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#confirmModal" data-reporte-id="{{ reporte.idReporte }}">
+                            <i class="lni lni-trash-can"></i> Eliminar
+                        </button>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Modal de confirmación -->
+<div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+        <div class="modal-content" style="border-radius: 15px; background: linear-gradient(135deg, #f8f9fa, #e9ecef);">
+            <div class="modal-header border-0 text-center" style="background: #dc3545; color: white; border-radius: 15px 15px 0 0;">
+                <h5 class="modal-title w-100" id="confirmModalLabel">Eliminar Reporte</h5>
+            </div>
+            <div class="modal-body text-center">
+                <p style="font-size: 1.2rem; color: #6c757d;">¿Estás seguro de que deseas eliminar este reporte?</p>
+                <i class="lni lni-warning text-danger" style="font-size: 3rem;"></i>
+            </div>
+            <div class="modal-footer border-0 justify-content-center">
+                <form id="deleteForm" action="{{ url_for('reporte.eliminar_reporte') }}" method="POST">
+                    <input type="hidden" name="id" id="reporte_id">
+                    <button type="button" class="btn btn-outline-secondary px-4 py-2" data-bs-dismiss="modal" style="border-radius: 8px;">Cancelar</button>
+                    <button type="submit" class="btn btn-danger px-4 py-2" style="border-radius: 8px;">Eliminar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Script para manejar el ID del reporte -->
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var confirmModal = document.getElementById('confirmModal');
+        confirmModal.addEventListener('show.bs.modal', function (event) {
+            var button = event.relatedTarget;
+            var reporteId = button.getAttribute('data-reporte-id');
+            document.getElementById('reporte_id').value = reporteId;
+        });
+    });
+</script>
+{% endblock %}

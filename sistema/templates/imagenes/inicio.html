@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container-fluid text-center mt-4">
+    <div class="card-header mb-4" style="background-color: transparent; border: none;">
+        <h1 class="display-4 font-weight-bold text-black">{% block title %}IMÁGENES{% endblock %}</h1>
+    </div>
+    <!-- Tercera fila de opciones -->
+    <div class="row g-4">
+        <div class="col-md-6 mb-4">
+            <div class="card card-hover shadow-lg h-100 border-0" style="background: linear-gradient(135deg, #007bff, #0056b3); color: white;">
+                <div class="card-body text-center">
+                    <i class="fas fa-upload fa-3x mb-3" style="font-size: 2.5rem;"></i>
+                    <h2 class="card-title">Subir Imágenes</h2>
+                    <p class="card-text" style="font-size: 1.3rem;">Sube tu conjunto de imágenes a un proyecto comprimido en un archivo ZIP</p>
+                    <a href="{{ url_for('imagenes.subir')}}" class="btn btn-light btn-lg" style="font-size: 1.3rem; padding: 1rem;">Subir</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 mb-4">
+            <div class="card card-hover shadow-lg h-100 border-0" style="background: linear-gradient(135deg, #28a745, #1e7e34); color: white;">
+                <div class="card-body text-center">
+                    <i class="fas fa-eye fa-3x mb-3" style="font-size: 2.5rem;"></i>
+                    <h2 class="card-title">Visualizar Imágenes</h2>
+                    <p class="card-text" style="font-size: 1.3rem;">Visualiza y manipula las imágenes de un proyecto.</p>
+                    <a href="{{ url_for('imagenes.seleccionar')}}" class="btn btn-light btn-lg" style="font-size: 1.3rem; padding: 1rem;">Visualizar</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Estilos adicionales -->
+<style>
+    .card-hover {
+        border-radius: 15px;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .card-hover:hover {
+        transform: translateY(-10px) scale(1.02);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    }
+
+    .card-title {
+        font-size: 1.8rem;
+        font-weight: bold;
+    }
+
+    .card-text {
+        font-size: 1.3rem;
+        font-weight: 600;
+    }
+
+    .btn-lg {
+        font-size: 1.3rem;
+        padding: 1rem;
+    }
+</style>
+{% endblock %}

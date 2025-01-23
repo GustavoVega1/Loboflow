@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container-fluid p-0 m-0" style="overflow-x: hidden; width: 100%;"> 
+    <div class="row w-100 justify-content-center">
+        <div class="col-md-12 col-lg-10 col-xl-8"> 
+            <div class="bg-light shadow-sm p-5 rounded" style="min-height: 50vh;"> 
+                <div class="text-center mb-4">
+                    <h1 class="h1" style="font-size: 2.5rem;">{% block title %}Generar Reporte de Progreso del Proyecto{% endblock %}</h1>
+                </div>
+                <form method="POST">
+                    <!-- Seleccionar Proyecto -->
+                    <div class="form-group mb-5">
+                        <label for="proyecto" class="h6" style="font-size: 1.3rem;">Seleccionar Proyecto</label>
+                        <select class="form-select" aria-label="Default select example" id="proyecto" name="proyecto" required style="font-size: 1.3rem; padding: 1rem; line-height: 2;">
+                            <option value="" disabled selected>Selecciona un proyecto</option>
+                            {% for proyecto in proyectos %}
+                                <option value="{{ proyecto.idProyecto }}">{{ proyecto.Nombre }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <!-- Nombre del Reporte -->
+                    <div class="form-group mb-5">
+                        <label for="nombre" class="h6" style="font-size: 1.3rem;">Nombre del Reporte</label>
+                        <input type="text" class="form-control" id="nombre" name="nombre" required style="font-size: 1.3rem; padding: 1rem; line-height: 2;">
+                    </div>
+
+                    <!-- Descripción del Reporte -->
+                    <div class="form-group mb-5">
+                        <label for="descripcion" class="h6" style="font-size: 1.3rem;">Descripción del Reporte</label>
+                        <textarea class="form-control" id="descripcion" name="descripcion" style="font-size: 1.3rem; padding: 1rem; line-height: 2;" rows="4"></textarea>
+                    </div>
+
+                    <div class="d-flex justify-content-between mt-5">
+                        <a href="{{ url_for('reporte.inicio') }}" class="btn btn-danger btn-sm w-48" style="font-size: 1.3rem; padding: 1rem;">Cancelar</a>
+                        <button type="submit" class="btn btn-success btn-sm w-48" style="font-size: 1.3rem; padding: 1rem;">Generar Reporte</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

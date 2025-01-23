@@ -1,0 +1,116 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container-fluid p-0 m-0" style="overflow-x: hidden; width: 100%;"> 
+    <div class="row w-100 justify-content-center">
+        <div class="col-md-12 col-lg-10 col-xl-8"> 
+            <div class="bg-light shadow-sm p-5 rounded" style="min-height: 50vh;"> 
+                <div class="text-center mb-4">
+                    <h1 class="h1" style="font-size: 2.5rem;">{% block title %}Comparativo de Modelos{% endblock %}</h1>
+                </div>
+                <form method="POST">
+                    <!-- Campo para el nombre del reporte -->
+                    <div class="form-group mb-5">
+                        <label for="nombre" class="h6" style="font-size: 1.3rem;">Nombre del reporte</label>
+                        <input type="text" id="nombre" name="nombre" class="form-control" required style="font-size: 1.3rem; padding: 1rem;">
+                    </div>
+
+                    <!-- Campo para la descripción del reporte -->
+                    <div class="form-group mb-5">
+                        <label for="descripcion" class="h6" style="font-size: 1.3rem;">Descripción del reporte (opcional)</label>
+                        <textarea id="descripcion" name="descripcion" class="form-control" rows="4" style="font-size: 1.3rem; padding: 1rem;"></textarea>
+                    </div>
+
+                    <!-- Selección del Proyecto -->
+                    <div class="form-group mb-5">
+                        <label for="proyecto" class="h6" style="font-size: 1.3rem;">Seleccionar proyecto</label>
+                        <div class="input-group">
+                            <select class="form-select" aria-label="Default select example" id="proyecto" name="proyecto" required style="font-size: 1.3rem; padding: 1rem; line-height: 1.1;">
+                                <option value="" disabled selected>Selecciona un proyecto</option>
+                                {% for proyecto in proyectos %}
+                                    <option value="{{ proyecto.idProyecto }}">{{ proyecto.Nombre }}</option>
+                                {% endfor %}
+                            </select>
+                            <button type="button" class="btn btn-primary btn-lg" onclick="actualizarModelos()"><i class="lni lni-search-alt"></i></button>
+                        </div>
+                    </div>
+
+                    <!-- Comparar Modelos -->
+                    <div class="row">
+                        <!-- Modelo 1 -->
+                        <div class="col-md-6">
+                            <div class="form-group mb-5">
+                                <label for="modelo1" class="h6" style="font-size: 1.3rem;">Seleccionar primer modelo</label>
+                                <select class="form-select" id="modelo1" name="modelo1" required style="font-size: 1.3rem; padding: 1rem; line-height: 1.1;">
+                                    <option value="">Selecciona un modelo primero</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Modelo 2 -->
+                        <div class="col-md-6">
+                            <div class="form-group mb-5">
+                                <label for="modelo2" class="h6" style="font-size: 1.3rem;">Seleccionar segundo modelo</label>
+                                <select class="form-select" id="modelo2" name="modelo2" required style="font-size: 1.3rem; padding: 1rem; line-height: 1.1;">
+                                    <option value="">Selecciona un modelo primero</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-between mt-5">
+                        <a href="{{ url_for('reporte.inicio') }}" class="btn btn-danger btn-sm w-48" style="font-size: 1.3rem; padding: 1rem;">Cancelar</a>
+                        <button type="submit" class="btn btn-success btn-sm w-48" style="font-size: 1.3rem; padding: 1rem;">Comparar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block scripts %}
+<script>
+    // Asigna los modelos a la variable 'modelos' usando Jinja
+    const modelos = {{ modelos|tojson }};
+
+    function actualizarModelos() {
+        var proyectoId = document.getElementById('proyecto').value;
+
+        // Referencias a los selectores de modelos
+        var modeloSelect1 = document.getElementById('modelo1');
+        var modeloSelect2 = document.getElementById('modelo2');
+
+        // Limpiar las opciones anteriores
+        modeloSelect1.innerHTML = '<option value="">Selecciona un modelo</option>';
+        modeloSelect2.innerHTML = '<option value="">Selecciona un modelo</option>';
+
+        // Verificar si hay modelos para el proyecto seleccionado
+        if (modelos[proyectoId]) {
+            var datasetModelos = modelos[proyectoId];
+
+            // Recorrer los datasets y modelos
+            Object.keys(datasetModelos).forEach(dataset => {
+                datasetModelos[dataset].forEach(modelo => {
+                    // Crear una nueva opción para cada modelo
+                    var option1 = document.createElement('option');
+                    option1.value = modelo.idModelo; // Valor correcto
+                    option1.textContent = modelo.Nombre;
+
+                    var option2 = document.createElement('option');
+                    option2.value = modelo.idModelo; // Valor correcto
+                    option2.textContent = modelo.Nombre;
+
+                    console.log('Modelo 1:', option1);
+                    console.log('Modelo 2:', option2);
+
+                    // Añadir las opciones a ambos selectores
+                    modeloSelect1.appendChild(option1);
+                    modeloSelect2.appendChild(option2);
+                });
+            });
+        }
+    }
+</script>
+{% endblock %}
+
+{% endblock %}

@@ -1,0 +1,136 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Contenedor para el título -->
+    <div class="text-center" style="margin-bottom: 40px;">
+        <h1 class="display-2 mb-3" style="margin: 0;">{% block title %}Gestión de proyectos{% endblock %}</h1>
+    </div>
+    
+    <!-- Contenedor para alinear el botón a la derecha -->
+    <div class="d-flex justify-content-end mb-3">
+        <a href="{{ url_for('proyecto.registrar') }}" class="btn btn-success btn-lg">
+            <i class="lni lni-circle-plus"></i>
+            <span style="font-size: 1.2rem;">Agregar</span>
+        </a>
+    </div>
+
+    <!-- Contenedor para la tabla -->
+    <div class="table-responsive">
+        <table class="table table-hover table-bordered table-striped">
+            <thead class="table-dark" style="text-align: center;">
+                <tr>
+                    <th class="col" style="width: 18%;">Nombre</th>
+                    <th class="col" style="width: 24%;">Descripción</th>
+                    <th class="col" style="width: 18%;">Tipo de Proyecto</th>
+                    <th class="col" style="width: 20%;">Objetivo</th>
+                    <th class="col" style="width: 20%;" colspan="2">Opciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for Proyecto in proyectos %}
+                <tr class="text-center" style="font-size: 1.2rem; height: 45px;"> <!-- Reducir el espacio entre filas -->
+                    <td>{{ Proyecto.Nombre }}</td>
+                    <td>{{ Proyecto.Descripcion }}</td>
+                    <td>{{ Proyecto.TipoProyecto }}</td>  <!-- Mostrar Tipo de Proyecto -->
+                    <td>{{ Proyecto.Objetivo if Proyecto.Objetivo else 'Sin objetivo' }}</td>
+                    <td>
+                        {% if Proyecto.Estatus %}
+                            <!-- Botón de confirmación de eliminación -->
+                            <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#confirmModal" data-usuario-id="{{ Proyecto.idProyecto }}">
+                                <i class="lni lni-trash-can"></i> Eliminar
+                            </button>
+                            <!-- Botón de modificación -->
+                            <a href="{{ url_for('proyecto.modificar_proyecto', id=Proyecto.idProyecto) }}" class="btn btn-warning btn-sm">
+                                <i class="lni lni-pencil"></i> Modificar
+                            </a>
+                        {% else %}
+                            <!-- Botón de habilitar -->
+                            <form action="{{ url_for('proyecto.habilitar') }}" method="post" style="display:inline;">
+                                <input type="hidden" name="id" value="{{ Proyecto.idProyecto }}">
+                                <button type="submit" class="btn btn-success btn-sm">
+                                    <i class="lni lni-checkmark-circle"></i> Habilitar
+                                </button>
+                            </form>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>                      
+        </table>
+    </div>
+</div>
+
+<!-- Modal de confirmación -->
+<div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+        <div class="modal-content" style="border-radius: 15px; background: linear-gradient(135deg, #f8f9fa, #e9ecef);">
+            <div class="modal-header border-0 text-center" style="background: #dc3545; color: white; border-radius: 15px 15px 0 0;">
+                <h5 class="modal-title w-100" id="confirmModalLabel">Eliminar Proyecto</h5>
+            </div>
+            <div class="modal-body text-center">
+                <p style="font-size: 1.2rem; color: #6c757d;">¿Estás seguro de que deseas eliminar este proyecto?</p>
+                <i class="lni lni-warning text-danger" style="font-size: 3rem;"></i>
+            </div>
+            <div class="modal-footer border-0 justify-content-center">
+                <form id="deleteForm" action="{{ url_for('proyecto.eliminar') }}" method="post">
+                    <input type="hidden" name="id" id="user_id">
+                    <button type="button" class="btn btn-outline-secondary px-4 py-2" data-bs-dismiss="modal" style="border-radius: 8px;">Cancelar</button>
+                    <button type="submit" class="btn btn-danger px-4 py-2" style="border-radius: 8px;">Eliminar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Estilo CSS adicional para el modal -->
+<style>
+    #confirmModal .modal-content {
+        animation: fadeIn 0.5s ease-out;
+        box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.15);
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    #confirmModal .btn-danger:hover {
+        background-color: #c82333;
+        transform: scale(1.05);
+        transition: transform 0.2s ease-in-out, background-color 0.2s ease-in-out;
+    }
+
+    #confirmModal .btn-outline-secondary:hover {
+        background-color: #e2e6ea;
+        transform: scale(1.05);
+        transition: transform 0.2s ease-in-out, background-color 0.2s ease-in-out;
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var confirmModal = document.getElementById('confirmModal');
+        confirmModal.addEventListener('show.bs.modal', function(event) {
+            var button = event.relatedTarget; // Botón que abrió el modal
+            var userId = button.getAttribute('data-usuario-id'); // Obtén el ID del proyecto
+            var userIdInput = document.getElementById('user_id');
+
+            if (userId) {
+                // Establece el valor del input hidden con el ID del proyecto
+                userIdInput.value = userId;
+            } else {
+                console.error('User ID is missing');
+                userIdInput.value = ""; // Evita que el formulario tenga un ID vacío
+            }
+        });
+    });
+</script>
+
+{% endblock %}

@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-3">
+    <h1 class="text-center mb-5" style="font-weight: 800; font-size: 5rem; color: #333;">{% block title %}PANEL EXPERTO{% endblock %}</h1>
+    
+    <div class="row g-4">
+        <!-- Tarjeta de Proyectos Habilitados -->
+        <div class="col-md-4">
+            <div class="card shadow-lg border-0 rounded-4 text-center py-5 position-relative" style="background: linear-gradient(135deg, #28a745, #1e7e34); color: white;">
+                <i class="fas fa-project-diagram fa-4x mb-4"></i>
+                <h3 class="fw-bold" style="font-size: 1.75rem;">Proyectos Habilitados</h3>
+                <p class="fs-1 fw-bold">{{ total_proyectos }}</p>
+                <div class="position-absolute top-0 end-0 p-3">
+                    <i class="fas fa-tasks fa-2x" style="opacity: 0.1;"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tarjeta de Modelos Cargados -->
+        <div class="col-md-4">
+            <div class="card shadow-lg border-0 rounded-4 text-center py-5 position-relative" style="background: linear-gradient(135deg, #17a2b8, #10707f); color: white;">
+                <i class="fas fa-robot fa-4x mb-4"></i>
+                <h3 class="fw-bold" style="font-size: 1.75rem;">Modelos Cargados</h3>
+                <p class="fs-1 fw-bold">{{ total_modelos }}</p>
+                <div class="position-absolute top-0 end-0 p-3">
+                    <i class="fas fa-microchip fa-2x" style="opacity: 0.1;"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tarjeta de Datasets Generados -->
+        <div class="col-md-4">
+            <div class="card shadow-lg border-0 rounded-4 text-center py-5 position-relative" style="background: linear-gradient(135deg, #ffc107, #e0a800); color: white;">
+                <i class="fas fa-database fa-4x mb-4"></i>
+                <h3 class="fw-bold" style="font-size: 1.75rem;">Datasets Generados</h3>
+                <p class="fs-1 fw-bold">{{ total_datasets }}</p>
+                <div class="position-absolute top-0 end-0 p-3">
+                    <i class="fas fa-folder-open fa-2x" style="opacity: 0.1;"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4 mt-4">
+        <!-- Tarjeta de Modelos Entrenados -->
+        <div class="col-md-6">
+            <div class="card shadow-lg border-0 rounded-4 text-center py-5 position-relative" style="background: linear-gradient(135deg, #dc3545, #b02a37); color: white;">
+                <i class="fas fa-cogs fa-4x mb-4"></i>
+                <h3 class="fw-bold" style="font-size: 1.75rem;">Modelos Entrenados</h3>
+                <p class="fs-1 fw-bold">{{ total_modelos_generados }}</p>
+                <div class="position-absolute top-0 end-0 p-3">
+                    <i class="fas fa-wrench fa-2x" style="opacity: 0.1;"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tarjeta de Reportes Generados -->
+        <div class="col-md-6">
+            <div class="card shadow-lg border-0 rounded-4 text-center py-5 position-relative" style="background: linear-gradient(135deg, #6c757d, #495057); color: white;">
+                <i class="fas fa-file-alt fa-4x mb-4"></i>
+                <h3 class="fw-bold" style="font-size: 1.75rem;">Reportes Generados</h3>
+                <p class="fs-1 fw-bold">{{ total_reportes }}</p>
+                <div class="position-absolute top-0 end-0 p-3">
+                    <i class="fas fa-chart-line fa-2x" style="opacity: 0.1;"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .card {
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        border-radius: 15px;
+    }
+
+    .card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    }
+
+    .position-absolute i {
+        font-size: 6rem;
+    }
+
+    h3 {
+        font-size: 1.75rem;
+    }
+
+    .container {
+        max-width: 1200px;
+    }
+</style>
+{% endblock %}

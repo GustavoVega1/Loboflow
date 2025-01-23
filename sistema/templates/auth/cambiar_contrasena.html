@@ -1,0 +1,116 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container-fluid p-0 m-0" style="overflow-x: hidden; width: 100%;">
+    <div class="row w-100 justify-content-center">
+        <div class="col-md-12 col-lg-10 col-xl-8">
+            <div class="bg-light shadow-sm p-5 rounded" style="min-height: 50vh;">
+                <div class="text-center mb-4">
+                    <h1 class="h1" >Cambiar Contraseña</h1>
+                </div>
+                <form method="post">
+                    <!-- Nueva Contraseña -->
+                    <div class="form-group mb-5 position-relative">
+                        <label for="new_password" class="h6" style="font-size: 1.3rem;">Nueva Contraseña</label>
+                        <div class="input-group">
+                            <input type="password" class="form-control" id="new_password" name="new_password" placeholder="Nueva Contraseña" required style="font-size: 1.3rem; padding: 1rem; line-height: 2;">
+                            <button type="button" class="btn btn-outline-secondary password-toggle" id="toggleNewPassword">
+                                <i class="bi bi-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Confirmar Contraseña -->
+                    <div class="form-group mb-5 position-relative">
+                        <label for="confirm_password" class="h6" style="font-size: 1.3rem;">Confirmar Contraseña</label>
+                        <div class="input-group">
+                            <input type="password" class="form-control" id="confirm_password" name="confirm_password" placeholder="Confirmar Contraseña" required style="font-size: 1.3rem; padding: 1rem; line-height: 2;" oninput="checkPasswordMatch()">
+                            <button type="button" class="btn btn-outline-secondary password-toggle" id="toggleConfirmPassword">
+                                <i class="bi bi-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Mensaje de Contraseña -->
+                    <div id="password-message" class="mb-5" style="font-size: 1.2rem;"></div>
+                    
+                    <!-- Botones -->
+                    <div class="d-flex justify-content-between mt-5">
+                        <button type="submit" class="btn btn-success btn-sm w-48" id="submit-btn" disabled style="font-size: 1.3rem; padding: 1rem;">Cambiar</button>
+                        {% if g.user.Rol == "Administrador" %}
+                            <a href="{{ url_for('auth.admin') }}" class="btn btn-danger btn-sm w-48" style="font-size: 1.3rem; padding: 1rem;">Cancelar</a>
+                        {% elif g.user.Rol == "Experto" %}
+                            <a href="{{ url_for('auth.experto') }}" class="btn btn-danger btn-sm w-48" style="font-size: 1.3rem; padding: 1rem;">Cancelar</a>
+                        {% elif g.user.Rol == "Tester" %}
+                            <a href="{{ url_for('auth.tester') }}" class="btn btn-danger btn-sm w-48" style="font-size: 1.3rem; padding: 1rem;">Cancelar</a>
+                        {% endif %}
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap Icons for the eye icon -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css" rel="stylesheet">
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    function togglePasswordVisibility(id, iconId) {
+        const input = document.getElementById(id);
+        const icon = document.querySelector(`#${iconId} i`);
+        if (input.type === "password") {
+            input.type = "text";
+            icon.classList.replace('bi-eye', 'bi-eye-slash');
+        } else {
+            input.type = "password";
+            icon.classList.replace('bi-eye-slash', 'bi-eye');
+        }
+    }
+
+    document.getElementById('toggleNewPassword').addEventListener('click', function () {
+        togglePasswordVisibility('new_password', 'toggleNewPassword');
+    });
+
+    document.getElementById('toggleConfirmPassword').addEventListener('click', function () {
+        togglePasswordVisibility('confirm_password', 'toggleConfirmPassword');
+    });
+
+    function checkPasswordMatch() {
+        const newPassword = document.getElementById('new_password').value;
+        const confirmPassword = document.getElementById('confirm_password').value;
+        const message = document.getElementById('password-message');
+        const submitButton = document.getElementById('submit-btn');
+
+        if (newPassword === confirmPassword && newPassword !== "") {
+            document.getElementById('confirm_password').classList.remove('is-invalid');
+            document.getElementById('confirm_password').classList.add('is-valid');
+            message.textContent = "Las contraseñas coinciden.";
+            message.style.color = "green";
+            submitButton.disabled = false;
+        } else {
+            document.getElementById('confirm_password').classList.remove('is-valid');
+            document.getElementById('confirm_password').classList.add('is-invalid');
+            message.textContent = "Las contraseñas no coinciden.";
+            message.style.color = "red";
+            submitButton.disabled = true;
+        }
+    }
+
+    document.getElementById('confirm_password').addEventListener('input', checkPasswordMatch);
+});
+</script>
+
+<style>
+    .password-toggle {
+        cursor: pointer;
+        font-size: 1.5rem;
+    }
+    .is-valid {
+        border-color: green !important;
+    }
+    .is-invalid {
+        border-color: red !important;
+    }
+</style>
+{% endblock %}

@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container text-center mt-8 pt-0">
+    <h1 class="display-3 mb-4 fw-bold text-primary">{% block title %}Bienvenido a LoboFlow{% endblock title %}</h1>
+    <p class="lead mb-4 text-muted">
+        Plataforma avanzada para la detección de objetos, desarrollada para la Universidad Politécnica del Estado de Morelos.
+    </p>
+    <hr class="my-4">
+
+    <!-- Botón de Iniciar Sesión -->
+    <div class="mb-5">
+        <a href="{{ url_for('auth.login') }}" class="btn btn-lg btn-outline-primary shadow-sm px-5 py-3">
+            <i class="fas fa-sign-in-alt me-2"></i>Iniciar Sesión
+        </a>
+    </div>
+
+    <!-- Carrusel -->
+    <div id="infoCarousel" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-inner">
+            <div class="carousel-item active">
+                <div class="card shadow-lg border-primary rounded-lg border-3 h-100 bg-light">
+                    <div class="card-body d-flex flex-column align-items-center text-center">
+                        <h4 class="card-title mb-3 text-primary fw-bold">Arquitecturas Implementadas</h4>
+                        <p class="card-text mb-4 flex-grow-1">
+                            En LoboFlow, integramos dos de las arquitecturas más avanzadas para tareas de visión por computadora: YOLO y Transformers.
+                        </p>
+                        <img src="{{ url_for('static', filename='images/redes.png') }}" alt="Arquitecturas" class="img-fluid rounded shadow-sm" style="max-width: 80%; height: auto;">
+                    </div>
+                </div>
+            </div>
+            <div class="carousel-item">
+                <div class="card shadow-lg border-success rounded-lg border-3 h-100 bg-light">
+                    <div class="card-body d-flex flex-column align-items-center text-center">
+                        <h4 class="card-title mb-3 text-success fw-bold">YOLO (You Only Look Once)</h4>
+                        <p class="card-text mb-4 flex-grow-1">
+                            YOLO es una arquitectura de red neuronal para la detección de objetos en imágenes y vídeos en tiempo real.
+                        </p>
+                        <img src="{{ url_for('static', filename='images/yolo.png') }}" alt="YOLO Architecture" class="img-fluid rounded shadow-sm" style="max-width: 80%; height: auto;">
+                    </div>
+                </div>
+            </div>
+            <div class="carousel-item">
+                <div class="card shadow-lg border-info rounded-lg border-3 h-100 bg-light">
+                    <div class="card-body d-flex flex-column align-items-center text-center">
+                        <h4 class="card-title mb-3 text-info fw-bold">Transformers</h4>
+                        <p class="card-text mb-4 flex-grow-1">
+                            Los Transformers han revolucionado el campo del aprendizaje automático con su capacidad para capturar dependencias a largo plazo en secuencias.
+                        </p>
+                        <img src="{{ url_for('static', filename='images/transformer.jpg') }}" alt="Transformer Architecture" class="img-fluid rounded shadow-sm" style="max-width: 80%; height: auto;">
+                    </div>
+                </div>
+            </div>
+            
+            <div class="carousel-item">
+                <div class="card shadow-lg border-danger rounded-lg border-3 h-100 bg-light">
+                    <div class="card-body d-flex flex-column align-items-center text-center">
+                        <h4 class="card-title mb-3 text-danger fw-bold">Detección de Objetos</h4>
+                        <p class="card-text mb-4 flex-grow-1">
+                            La detección de objetos identifica y localiza objetos en imágenes, proporcionando cuadros delimitadores y etiquetas.
+                        </p>
+                        <img src="{{ url_for('static', filename='images/deteccion.jpg') }}" alt="Object Detection" class="img-fluid rounded shadow-sm" style="max-width: 80%; height: auto;">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#infoCarousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Anterior</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#infoCarousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Siguiente</span>
+        </button>
+    </div>
+</div>
+<style>
+    .carousel-inner img {
+        width: 100%; /* Ajusta el ancho al contenedor */
+        max-width: 150px; /* Define un ancho máximo uniforme */
+        height: 100px; /* Define una altura fija */
+        object-fit: cover; /* Recorta o ajusta la imagen para llenar el espacio definido */
+        border-radius: 10px; /* Opcional: bordes redondeados para un diseño más elegante */
+        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Opcional: agrega un poco de sombra */
+    }
+    </style>
+    
+{% endblock %}
